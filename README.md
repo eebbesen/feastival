@@ -1,8 +1,10 @@
-## Feastival
+## feastival
 
 An API for United States food holidays.
 
-Check it out at https://feastival.azurewebsites.net/api/year
+[See it in action!](https://feastival.azurewebsites.net/api/year)
+
+![tests](https://github.com/eebbesen/feastival/actions/workflows/test.yml/badge.svg)
 
 ### year
 
@@ -10,11 +12,13 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/year provides all holidays for
 
 ### month-day
 
+Given DATE_PORTION is any of `MM-DD`, `MM-D`, `MM`, `M`
+
 https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/month-day?filter=DATE_PORTION provides
 * all holidays for a date when `MM-DD` is provieded (e.g., `05-21`)
 * all holidays for a block of days in a month when `MM-D` is provided (e.g., `05-2`)
 * all holidays for a month when `MM` is provided (e.g., `05`)
-* all holidys for a block of months when `M` is provided (e.g., `0`)
+* all holidays for a block of months when `M` is provided (e.g., `0`)
 
 ### today
 
@@ -71,13 +75,18 @@ $ reportgenerator \
     * needed to use VS Code to generate token as part of URL for the URL to work with the default `AuthorizationLevel`
 
 ### Azure deployment via GitHub Actions
-Create deployer
+Create deployer via the Azure CLI
 
 ```bash
-az ad sp create-for-rbac --name NAM \
+az ad sp create-for-rbac --name NAME \
   --role contributor \
   --scopes /subscriptions/SUBSCRIPTION/resourceGroups/RESOURCE_GROUP \
   --sdk-auth
 ```
 
-then in Azure Portal create application registration credential
+For deployments to succeed the following Azure secrets need to be populated in GitHub:
+* CLIENT_ID_SECRET
+* SUBSCRIPTION_ID_SECRET
+* TENANT_ID_SECRET
+
+then in Azure Portal create application registration credential linked to your GitHub repository
