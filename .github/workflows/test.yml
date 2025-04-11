@@ -12,7 +12,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      TEST_RESULTS_PATH: "/home/runner/work/Feastival/Feastival/FeastivalTest/TestResults"
+      TEST_RESULTS_PATH: "/home/runner/work/feastival/feastival/FeastivalTest/TestResults"
       MIN_LINE_COVERAGE: 100
       MIN_BRANCH_COVERAGE: 50
     steps:
@@ -26,7 +26,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --settings ../Feastival/FeastivalTest/tests.runsettings --collect "XPlat Code Coverage"
+      run: dotnet test --no-build --settings ../feastival/FeastivalTest/tests.runsettings --collect "XPlat Code Coverage"
     - name: ReportGenerator with coverage gate
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.4
       if: always()

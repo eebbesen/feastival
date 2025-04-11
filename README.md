@@ -1,5 +1,9 @@
 ## Feastival
 
+An API for United States food holidays.
+
+Check it out at https://feastival.azurewebsites.net/api/year
+
 ### year
 
 https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/year provides all holidays for the year
