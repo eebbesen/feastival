@@ -102,7 +102,5 @@ namespace Feastival.Feastival
             _logger.LogInformation("ABOUT request");
             return new OkObjectResult(Helper.GetVersion());
         }
-
-
     }
 }

@@ -6,6 +6,8 @@ An API for United States food holidays.
 
 ![tests](https://github.com/eebbesen/feastival/actions/workflows/test.yml/badge.svg)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=eebbesen_feastival&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=eebbesen_feastival)
+
 ### year
 
 https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/year provides all holidays for the year
