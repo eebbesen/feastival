@@ -60,6 +60,10 @@ $ reportgenerator \
     -reporttypes:Html
 ```
 
+### sonar
+
+The sonar GitHub action will fail unless SONAR_TOKEN is set as a secret
+
 ## setup notes
 
 * followed https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-function-app-portal?pivots=programming-language-csharp
