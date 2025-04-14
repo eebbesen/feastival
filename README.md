@@ -26,6 +26,12 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/month-day?filter=DATE_PORTION 
 
 https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/year provides all holidays for today
 
+### range
+
+https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/range?startDate=MM-dd&endDate=MM-dd provides all holidays between the start and end dates
+
+No date portions and no year allowed, just `MM-dd`
+
 ### about
 
 https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/about provides the version and commit sha

@@ -25,6 +25,24 @@ namespace FeastivalTest
         }
 
         [Fact]
+        public void FilterMultiple_WithEndDateDifferentFromStartDate_ShouldReturnAllData()
+        {
+            var result = Helper.FilterRange(data, "2025-04-15", "2025-04-16");
+            Assert.Equal(2, result.Count);
+            Assert.Equal(["McDonald's Day", "National Glazed Spiral Ham Day"], result.Values.First());
+            Assert.Equal(["Day of the Mushroom", "National Eggs Benedict Day"], result.Values.Last());
+        }
+
+        [Fact]
+        public void FilterMultiple_WithEndDateDifferentFromStartDateAcrossMonth_ShouldReturnAllData()
+        {
+            var result = Helper.FilterRange(data, "2025-04-29", "2025-05-02");
+            Assert.Equal(4, result.Count);
+            Assert.Equal(["National Shrimp Scampi Day"], result.Values.First());
+            Assert.Equal(["National Truffles Day", "School Lunch Hero Day"], result.Values.Last());
+        }
+
+        [Fact]
         public void Filter_ShouldReturnAllDataForMonth()
         {
             Assert.Equal(29, Helper.Filter(data, "02").Count);
