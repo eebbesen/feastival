@@ -21,7 +21,7 @@ public partial class HttpTriggerFuncTest
     private static readonly string basePath = Path.Combine("..", "..", "..");
     private static readonly string expectedJson = File.ReadAllText(Path.Combine(basePath, "data", "2025.json"));
     [GeneratedRegex(@"^(\d+\.\d+\.\d+)\+([a-f0-9]{40})$")]
-        private static partial Regex MyRegex();
+    private static partial Regex MyRegex();
 
     public HttpTriggerFuncTest()
     {
@@ -77,7 +77,7 @@ public partial class HttpTriggerFuncTest
     public void BuildResult_Year_ShouldReturnOkObjectResult()
     {
         var result = (IActionResult)_buildResultMethod.Invoke(_httpTriggerFunc,
-            new object[] { basePath, "", "" });
+            [basePath, "", "", ""]);
 
         Assert.IsType<OkObjectResult>(result);
         Assert.Equal("application/json", ((OkObjectResult)result).ContentTypes[0]);
@@ -89,7 +89,7 @@ public partial class HttpTriggerFuncTest
     public void BuildResult_Year_ShouldReturnBadRequestObjectResult()
     {
         var result = (IActionResult)_buildResultMethod.Invoke(_httpTriggerFunc,
-            ["badpath", "", ""]);
+            ["badpath", "", "", ""]);
 
         Assert.IsType<BadRequestObjectResult>(result);
         Assert.Contains("Could not find a part of the path",
@@ -199,5 +199,67 @@ public partial class HttpTriggerFuncTest
         Assert.Equal("application/json", ((OkObjectResult)result).ContentTypes[0]);
         Assert.Equal(29,
             ((OkObjectResult)result).Value is Dictionary<string, List<string>> data ? data.Count : 0);
+    }
+
+    [Fact]
+    public void RunRange_ShouldReturnDataOverMonthEndIgnoreInvalidLeapDay()
+    {
+        var mockReq = new Mock<HttpRequest>();
+        mockReq.Setup(req => req.Query["startDate"]).Returns(("02-28"));
+        mockReq.Setup(req => req.Query["endDate"]).Returns(("03-03"));
+
+        var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
+
+        Assert.Equal("application/json", ((OkObjectResult)result).ContentTypes[0]);
+        Assert.Equal(4,
+            ((OkObjectResult)result).Value is Dictionary<string, List<string>> data ? data.Count : 0);
+    }
+
+    [Fact]
+    public void RunRange_ShouldReturnErrorWithoutStartDate()
+    {
+        var mockReq = new Mock<HttpRequest>();
+        mockReq.Setup(req => req.Query["endDate"]).Returns(("03-03"));
+
+        var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
+
+        Assert.Equal(HttpTriggerFunc.START_DATE_MESSAGE,
+            ((BadRequestObjectResult)result).Value.ToString());
+    }
+
+    [Fact]
+    public void RunRange_ShouldReturnErrorWithoutStartDateOrEndDate()
+    {
+        var mockReq = new Mock<HttpRequest>();
+        mockReq.Setup(req => req.Query["slug"]).Returns(("03-03"));
+
+        var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
+
+        Assert.Equal(HttpTriggerFunc.START_DATE_MESSAGE,
+            ((BadRequestObjectResult)result).Value.ToString());
+    }
+
+    [Fact]
+    public void RunRange_ShouldReturnErrorWithoutEndDate()
+    {
+        var mockReq = new Mock<HttpRequest>();
+        mockReq.Setup(req => req.Query["startDate"]).Returns(("02-28"));
+
+        var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
+
+        Assert.Equal(HttpTriggerFunc.END_DATE_MESSAGE,
+            ((BadRequestObjectResult)result).Value.ToString());
+    }
+
+    [Fact]
+    public void RunRange_ShouldReturnErrorWithInvalidStartDate()
+    {
+        var mockReq = new Mock<HttpRequest>();
+        mockReq.Setup(req => req.Query["startDate"]).Returns(("02-31"));
+
+        var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
+
+        Assert.Equal(HttpTriggerFunc.END_DATE_MESSAGE,
+            ((BadRequestObjectResult)result).Value.ToString());
     }
 }

@@ -17,6 +17,22 @@ namespace Feastival.Feastival
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
+        public static Dictionary<string, List<string>> FilterRange(Dictionary<string, List<string>> data,
+            string startDate, string endDate)
+        {
+            Dictionary<string, List<string>> result = [];
+            DateTime sd = DateTime.ParseExact(startDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime ed = DateTime.ParseExact(endDate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+            for (DateTime date = sd; date <= ed; date = date.AddDays(1))
+            {
+                var toAdd = Filter(data, date.ToString("MM-dd"));
+                result.Add(date.ToString("yyyy-MM-dd"), [.. toAdd.Values.SelectMany(v => v)]);
+            }
+
+            return result;
+        }
+
         public static string GetVersion()
         {
             var attribute = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
