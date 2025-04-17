@@ -63,7 +63,7 @@ then after each test
 
 ```bash
 $ reportgenerator \
-    -reports:"./FeastivalTest/TestResults/{guid}/coverage.cobertura.xml" \
+    -reports:"./FeastivalTest/TestResults/{guid}/coverage.opencover.xml" \
     -targetdir:"FeastivalTest/coveragereport" \
     -reporttypes:Html
 ```
