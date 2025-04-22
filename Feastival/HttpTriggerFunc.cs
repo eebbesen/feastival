@@ -16,8 +16,10 @@ namespace Feastival.Feastival
             + " for April 15th or ?filter=02 for February. "
             + "Partial months are also supported, e.g. ?filter=1 for February 10th - 19th. "
             + "Partial days are also supported, e.g., ?filter=05-0 for May 1st - 9th.";
-        public static readonly string START_DATE_MESSAGE = "Please provide a valid startDate in the query string MM-dd, e.g. ?startDate=04-15";
-        public static readonly string END_DATE_MESSAGE = "Please provide a valid endDate in the query string MM-dd, e.g. ?endDate=04-15";
+        public static readonly string START_DATE_MESSAGE =
+            "Please provide a valid startDate in the query string MM-dd, e.g. ?startDate=04-15";
+        public static readonly string END_DATE_MESSAGE =
+            "Please provide a valid endDate in the query string MM-dd, e.g. ?endDate=04-15";
 
         // If running in development use the AzureWebJobsScriptRoot instead of basePath
         // basePath comes from the FunctionContext
