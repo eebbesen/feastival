@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Web;
 
 namespace Feastival.Feastival
 {
@@ -40,7 +41,11 @@ namespace Feastival.Feastival
         private IActionResult BuildResult(string basePath,
             string timeSpan, string startDate = "", string endDate = "")
         {
-            _logger.LogInformation("{TimeSpan} startDate: {StartDate} endDate: {EndDate}", timeSpan, startDate, endDate);
+            _logger
+                .LogInformation("{TimeSpan} startDate: {StartDate} endDate: {EndDate}",
+                HttpUtility.UrlEncode(timeSpan),
+                HttpUtility.UrlEncode(startDate),
+                HttpUtility.UrlEncode(endDate));
             Dictionary<string, List<string>> data;
 
             try
