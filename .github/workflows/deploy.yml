@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy dotnet core project to Azure Function App - feastival
+name: Build, test, and deploy dotnet core project to Azure Function App - feastival
 
 on:
   push:
@@ -14,6 +14,15 @@ env:
   DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
 
 jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+
+  sonar:
+    uses: ./.github/workflows/sonar.yml
+    secrets: inherit
+    needs: test
+
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
