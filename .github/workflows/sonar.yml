@@ -1,0 +1,54 @@
+name: sonar
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  sonar:
+    name: SonarQube build and analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Cache SonarQube Cloud packages
+        uses: actions/cache@v4
+        with:
+           path: ~/.sonar/cache
+           key: ${{ runner.os }}-sonar
+           restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarQube Cloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+            path: ./.sonar/scanner
+            key: ${{ runner.os }}-sonar-scanner
+            restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Install SonarQube Cloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        run: |
+            mkdir -p ./.sonar/scanner
+            dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+      - name: Download coverage xml
+        uses: actions/download-artifact@v4
+        with:
+            name: coverage_report_xml
+      - name: Build and analyze
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+            ./.sonar/scanner/dotnet-sonarscanner begin /k:"eebbesen_feastival" /o:"eebbesen" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+            /d:sonar.inclusions="**/*.cs,**/*.cshtml,**/*.razor" \
+            /d:sonar.exclusions="**/obj/**,**/*.dll,**/wwwroot/lib/**,**/*Test*/**" \
+            /d:sonar.scanner.skipJreProvisioning=true /d:sonar.verbose=true
+
+            dotnet build
+            ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
