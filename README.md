@@ -39,6 +39,7 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/about provides the version and
 ## run
 
 ```bash
+$ cd Function
 $ func start
 ```
 
@@ -47,6 +48,7 @@ http://localhost:7071/api/year
 ## test
 
 ```bash
+$ cd FeastivalTest
 $ dotnet test --settings tests.runsettings --collect "XPlat Code Coverage"
 ```
 
@@ -102,3 +104,16 @@ For deployments to succeed the following Azure secrets need to be populated in G
 * TENANT_ID_SECRET
 
 then in Azure Portal create application registration credential linked to your GitHub repository
+
+
+## sources
+* https://foodiegiggles.com/food-holidays-calendar
+
+## days that shift every year
+* National Hot Dog Day (third Wednesday of July)
+* National Ice Cream Day (third Sunday of July)
+* National French Fry Day (second Friday in July)
+* World Kebab Day (second Friday in July)
+* National Refreshment Day (fourth Thursday in July)
+* National Chili Dog Day (last Thursday in July)
+
