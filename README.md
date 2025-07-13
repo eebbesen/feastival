@@ -24,7 +24,7 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/month-day?filter=DATE_PORTION 
 
 ### today
 
-https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/year provides all holidays for today
+https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/today provides all holidays for today
 
 ### range
 
