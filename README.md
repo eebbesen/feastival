@@ -121,4 +121,5 @@ then in Azure Portal create application registration credential linked to your G
 * World Kebab Day (second Friday in July)
 * National Refreshment Day (fourth Thursday in July)
 * National Chili Dog Day (last Thursday in July)
+* National Taco Day (first Tuesday in October)
 
