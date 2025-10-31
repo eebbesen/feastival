@@ -63,6 +63,14 @@ namespace FeastivalTest
         }
 
         [Fact]
+        public void Filter_ShouldSortData()
+        {
+            var result = Helper.Filter(data, "02-22");
+            Assert.Single(result);
+            Assert.Equal(["National Cook a Sweet Potato Day", "National Margarita Day"], result.Values.First());
+        }
+
+        [Fact]
         public void Filter_ShouldReturnEmptyForInvalidDay()
         {
             Assert.Empty(Helper.Filter(data, "05-9"));

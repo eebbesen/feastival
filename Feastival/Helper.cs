@@ -14,7 +14,7 @@ namespace Feastival.Feastival
             string filter)
         {
             return data.Where(kvp => PATTERN.Match(kvp.Key).Groups[1].ToString().StartsWith(filter))
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.OrderBy(v => v).ToList());
         }
 
         public static Dictionary<string, List<string>> FilterRange(Dictionary<string, List<string>> data,
