@@ -19,7 +19,7 @@ public partial class HttpTriggerFuncTest
     private readonly MethodInfo _buildResultMethod;
     private readonly Mock<FunctionContext> mockContext;
     private static readonly string basePath = Path.Combine("..", "..", "..");
-    private static readonly string expectedJson = File.ReadAllText(Path.Combine(basePath, "data", "2025.json"));
+    private static readonly string expectedJson = File.ReadAllText(Path.Combine(basePath, "data", "2026.json"));
     [GeneratedRegex(@"^(\d+\.\d+\.\d+)\+([a-f0-9]{40})$")]
     private static partial Regex MyRegex();
 
@@ -55,7 +55,7 @@ public partial class HttpTriggerFuncTest
     public void GetJsonFilePath_ShouldReturnCorrectPathWhenDevelopment()
     {
         string devPath = Path.Combine("dev", basePath);
-        string expectedPath = Path.Combine(devPath, "data", "2025.json");
+        string expectedPath = Path.Combine(devPath, "data", "2026.json");
         Environment.SetEnvironmentVariable("AzureWebJobsScriptRoot", devPath);
 
         string result = (string)_getJsonFilePathMethod.Invoke(null,
