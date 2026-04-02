@@ -10,7 +10,7 @@ namespace Feastival.Feastival
     public class HttpTriggerFunc(ILogger<HttpTriggerFunc> logger)
     {
         private readonly ILogger<HttpTriggerFunc> _logger = logger;
-        private static readonly string DATA_PATH = Path.Combine("data", "2025.json");
+        private static readonly string DATA_PATH = Path.Combine("data", "2026.json");
         public static readonly string FILTER_MESSAGE =
             "Please provide a filter in the query string, e.g. ?filter=04-15"
             + " for April 15th or ?filter=02 for February. "
