@@ -266,3 +266,6 @@ __pycache__/
 **/coveragereport
 
 .vscode
+
+.claude
+
