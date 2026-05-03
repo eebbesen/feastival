@@ -113,8 +113,6 @@ then in Azure Portal create application registration credential linked to your G
 
 ## days that shift every year
 * National Fruitcake Toss Day (first Saturday in January)
-
-
 * National Hot Dog Day (third Wednesday of July)
 * National Ice Cream Day (third Sunday of July)
 * National French Fry Day (second Friday in July)

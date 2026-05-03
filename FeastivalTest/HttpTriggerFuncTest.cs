@@ -1,27 +1,24 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Moq;
 using System.Reflection;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using Feastival.Feastival;
 
 namespace Feastival.FeastivalTest;
 
-public partial class HttpTriggerFuncTest
+public class HttpTriggerFuncTest
 {
     private readonly HttpTriggerFunc _httpTriggerFunc;
     private readonly Mock<ILogger<HttpTriggerFunc>> _loggerMock;
-    private readonly MethodInfo _getJsonFilePathMethod;
-    private readonly MethodInfo _getDataMethod;
-    private readonly MethodInfo _buildResultMethod;
+    private readonly MethodInfo? _getJsonFilePathMethod;
+    private readonly MethodInfo? _getDataMethod;
+    private readonly MethodInfo? _buildResultMethod;
     private readonly Mock<FunctionContext> mockContext;
     private static readonly string basePath = Path.Combine("..", "..", "..");
     private static readonly string expectedJson = File.ReadAllText(Path.Combine(basePath, "data", "2026.json"));
-    [GeneratedRegex(@"^(\d+\.\d+\.\d+)\+([a-f0-9]{40})$")]
-    private static partial Regex MyRegex();
 
     public HttpTriggerFuncTest()
     {
@@ -45,8 +42,7 @@ public partial class HttpTriggerFuncTest
     {
         string expectedPath = Path.Combine(basePath, "data", "2026.json");
 
-        string result = (string)_getJsonFilePathMethod.Invoke(null,
-            [basePath]);
+        string result = (string)_getJsonFilePathMethod!.Invoke(null, [basePath])!;
 
         Assert.Equal(expectedPath, result);
     }
@@ -58,8 +54,7 @@ public partial class HttpTriggerFuncTest
         string expectedPath = Path.Combine(devPath, "data", "2026.json");
         Environment.SetEnvironmentVariable("AzureWebJobsScriptRoot", devPath);
 
-        string result = (string)_getJsonFilePathMethod.Invoke(null,
-            [basePath]);
+        string result = (string)_getJsonFilePathMethod!.Invoke(null, [basePath])!;
 
         Assert.Equal(expectedPath, result);
     }
@@ -67,8 +62,8 @@ public partial class HttpTriggerFuncTest
     [Fact]
     public void GetDate_ShouldReturnJsonString()
     {
-        string result = (string)_getDataMethod.Invoke(_httpTriggerFunc,
-            [Path.Combine("..", "..", "..")]);
+        string result = (string)_getDataMethod!.Invoke(_httpTriggerFunc,
+            [Path.Combine("..", "..", "..")])!;
 
         Assert.Equal(expectedJson, result);
     }
@@ -76,26 +71,26 @@ public partial class HttpTriggerFuncTest
     [Fact]
     public void BuildResult_Year_ShouldReturnOkObjectResult()
     {
-        var result = (IActionResult)_buildResultMethod.Invoke(_httpTriggerFunc,
-            [basePath, "", "", ""]);
+        var result = (IActionResult)_buildResultMethod!.Invoke(_httpTriggerFunc,
+            [basePath, "", "", ""])!;
         System.Diagnostics.Debug.WriteLine($"AResult: {((OkObjectResult)result).Value}");
 
         Assert.IsType<OkObjectResult>(result);
         Assert.Equal("application/json", ((OkObjectResult)result).ContentTypes[0]);
-        var dict = ((OkObjectResult)result).Value as Dictionary<string, List<string>>;
-        Assert.Equal(JsonSerializer.Deserialize<Dictionary<string, List<string>>>(expectedJson).Count,
+        var dict = (Dictionary<string, List<string>>)((OkObjectResult)result).Value!;
+        Assert.Equal(JsonSerializer.Deserialize<Dictionary<string, List<string>>>(expectedJson)!.Count,
            dict.Count);
     }
 
     [Fact]
     public void BuildResult_Year_ShouldReturnBadRequestObjectResult()
     {
-        var result = (IActionResult)_buildResultMethod.Invoke(_httpTriggerFunc,
-            ["badpath", "", "", ""]);
+        var result = (IActionResult)_buildResultMethod!.Invoke(_httpTriggerFunc,
+            ["badpath", "", "", ""])!;
 
         Assert.IsType<BadRequestObjectResult>(result);
         Assert.Contains("Could not find a part of the path",
-            ((BadRequestObjectResult)result).Value.ToString());
+            ((BadRequestObjectResult)result).Value!.ToString());
     }
 
     [Fact]
@@ -134,7 +129,7 @@ public partial class HttpTriggerFuncTest
         Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal(400, ((BadRequestObjectResult)result).StatusCode);
         Assert.Equal(HttpTriggerFunc.FILTER_MESSAGE,
-            ((BadRequestObjectResult)result).Value.ToString());
+            ((BadRequestObjectResult)result).Value!.ToString());
     }
 
     [Fact]
@@ -158,10 +153,10 @@ public partial class HttpTriggerFuncTest
         mockReq.Setup(req => req.Query["filter"]).Returns("02-15");
 
         var result = (OkObjectResult)_httpTriggerFunc.RunMonthDay(mockReq.Object, mockContext.Object);
-        var values = result.Value as Dictionary<string, List<string>>;
+        var values = (Dictionary<string, List<string>>)result.Value!;
 
         Assert.Equal("application/json", result.ContentTypes[0]);
-        Assert.Equal(1, values?.Count);
+        Assert.Single(values);
         Assert.Equal("National Gumdrop Day", values.First().Value[0]);
     }
 
@@ -187,7 +182,7 @@ public partial class HttpTriggerFuncTest
         var result = _httpTriggerFunc.RunAbout(mockReq.Object);
 
         Assert.IsType<OkObjectResult>(result);
-        Assert.Matches(MyRegex(), ((OkObjectResult)result).Value.ToString());
+        Assert.Matches(TestHelpers.VersionRegex(), ((OkObjectResult)result).Value!.ToString());
     }
 
     [Fact]
@@ -226,7 +221,7 @@ public partial class HttpTriggerFuncTest
         var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
 
         Assert.Equal(HttpTriggerFunc.START_DATE_MESSAGE,
-            ((BadRequestObjectResult)result).Value.ToString());
+            ((BadRequestObjectResult)result).Value!.ToString());
     }
 
     [Fact]
@@ -238,7 +233,7 @@ public partial class HttpTriggerFuncTest
         var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
 
         Assert.Equal(HttpTriggerFunc.START_DATE_MESSAGE,
-            ((BadRequestObjectResult)result).Value.ToString());
+            ((BadRequestObjectResult)result).Value!.ToString());
     }
 
     [Fact]
@@ -250,7 +245,7 @@ public partial class HttpTriggerFuncTest
         var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
 
         Assert.Equal(HttpTriggerFunc.END_DATE_MESSAGE,
-            ((BadRequestObjectResult)result).Value.ToString());
+            ((BadRequestObjectResult)result).Value!.ToString());
     }
 
     [Fact]
@@ -262,6 +257,6 @@ public partial class HttpTriggerFuncTest
         var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
 
         Assert.Equal(HttpTriggerFunc.END_DATE_MESSAGE,
-            ((BadRequestObjectResult)result).Value.ToString());
+            ((BadRequestObjectResult)result).Value!.ToString());
     }
 }

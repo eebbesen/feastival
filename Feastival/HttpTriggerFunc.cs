@@ -2,6 +2,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Text.Json;
 using System.Web;
 
@@ -11,6 +12,10 @@ namespace Feastival.Feastival
     {
         private readonly ILogger<HttpTriggerFunc> _logger = logger;
         private static readonly string DATA_PATH = Path.Combine("data", "2026.json");
+        private const string FilterToday = "TODAY";
+        private const string FilterRange = "RANGE";
+        private const string FilterYear = "YEAR";
+        private const string FilterMonthDay = "MONTH-DAY";
         public static readonly string FILTER_MESSAGE =
             "Please provide a filter in the query string, e.g. ?filter=04-15"
             + " for April 15th or ?filter=02 for February. "
@@ -56,15 +61,15 @@ namespace Feastival.Feastival
                 data = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(jsonString)
                         ?? [];
 
-                if (timeSpan == "RANGE")
+                if (timeSpan == FilterRange)
                 {
                     data = Helper.FilterRange(data, startDate, endDate);
                 }
-                else if (timeSpan != "YEAR")
+                else if (timeSpan != FilterYear)
                 {
                     data = Helper.Filter(data, startDate);
                 }
-                else
+                else if (!string.IsNullOrEmpty(startDate))
                 {
                     data = data.Where(kvp => kvp.Key.StartsWith(startDate))
                         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
@@ -87,15 +92,15 @@ namespace Feastival.Feastival
     FunctionContext executionContext)
         {
             return BuildResult(executionContext.FunctionDefinition.PathToAssembly,
-                "TODAY", DateTime.Now.ToString("MM-dd"));
+                FilterToday, DateTime.Now.ToString("MM-dd"));
         }
 
         [Function("range")]
         public IActionResult RunRange([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req,
     FunctionContext executionContext)
         {
-            string startDate = req.Query["startDate"];
-            string endDate = req.Query["endDate"];
+            string? startDate = req.Query["startDate"];
+            string? endDate = req.Query["endDate"];
 
             if (string.IsNullOrEmpty(startDate))
             {
@@ -107,11 +112,13 @@ namespace Feastival.Feastival
                 return new BadRequestObjectResult(END_DATE_MESSAGE);
             }
 
-            var startDateParsed = DateTime.ParseExact(startDate, "MM-dd", null);
-            var endDateParsed = DateTime.ParseExact(endDate, "MM-dd", null);
+            var startDateParsed = DateTime.ParseExact(startDate, "MM-dd", CultureInfo.InvariantCulture);
+            var endDateParsed = DateTime.ParseExact(endDate, "MM-dd", CultureInfo.InvariantCulture);
 
             return BuildResult(executionContext.FunctionDefinition.PathToAssembly,
-                "RANGE", startDateParsed.ToString("yyyy-MM-dd"), endDateParsed.ToString("yyyy-MM-dd"));
+                FilterRange,
+                startDateParsed.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                endDateParsed.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
         }
 
         [Function("year")]
@@ -119,7 +126,7 @@ namespace Feastival.Feastival
     FunctionContext executionContext)
         {
             return BuildResult(executionContext.FunctionDefinition.PathToAssembly,
-                "YEAR");
+                FilterYear);
         }
 
         [Function("month-day")]
@@ -132,7 +139,7 @@ namespace Feastival.Feastival
             }
 
             return BuildResult(executionContext.FunctionDefinition.PathToAssembly,
-                "MONTH-DAY", req.Query["filter"].ToString() ?? string.Empty);
+                FilterMonthDay, req.Query["filter"].ToString());
         }
 
         [Function("about")]
