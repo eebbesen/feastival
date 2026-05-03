@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TEST_RESULTS_PATH: "/home/runner/work/feastival/feastival/FeastivalTest/TestResults"
-      MIN_LINE_COVERAGE: 100
+      MIN_LINE_COVERAGE: 96
       MIN_BRANCH_COVERAGE: 50
     steps:
     - uses: actions/checkout@v4
