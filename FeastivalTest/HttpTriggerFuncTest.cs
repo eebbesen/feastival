@@ -249,6 +249,34 @@ public class HttpTriggerFuncTest
     }
 
     [Fact]
+    public void RunMonthDay_ShouldAcceptSlashSeparator()
+    {
+        var mockReq = new Mock<HttpRequest>();
+        mockReq.Setup(req => req.Query["filter"]).Returns("02/15");
+
+        var result = (OkObjectResult)_httpTriggerFunc.RunMonthDay(mockReq.Object, mockContext.Object);
+        var values = (Dictionary<string, List<string>>)result.Value!;
+
+        Assert.Equal("application/json", result.ContentTypes[0]);
+        Assert.Single(values);
+        Assert.Equal("National Gumdrop Day", values.First().Value[0]);
+    }
+
+    [Fact]
+    public void RunRange_ShouldAcceptSlashSeparators()
+    {
+        var mockReq = new Mock<HttpRequest>();
+        mockReq.Setup(req => req.Query["startDate"]).Returns("02/28");
+        mockReq.Setup(req => req.Query["endDate"]).Returns("03/03");
+
+        var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
+
+        Assert.Equal("application/json", ((OkObjectResult)result).ContentTypes[0]);
+        Assert.Equal(4,
+            ((OkObjectResult)result).Value is Dictionary<string, List<string>> data ? data.Count : 0);
+    }
+
+    [Fact]
     public void RunRange_ShouldReturnErrorWithInvalidStartDate()
     {
         var mockReq = new Mock<HttpRequest>();

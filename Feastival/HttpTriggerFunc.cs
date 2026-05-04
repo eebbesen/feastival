@@ -12,19 +12,20 @@ namespace Feastival.Feastival
     {
         private readonly ILogger<HttpTriggerFunc> _logger = logger;
         private static readonly string DATA_PATH = Path.Combine("data", "2026.json");
+        private static string NormalizeDateSeparator(string date) => date.Replace('/', '-');
         private const string FilterToday = "TODAY";
         private const string FilterRange = "RANGE";
         private const string FilterYear = "YEAR";
         private const string FilterMonthDay = "MONTH-DAY";
         public static readonly string FILTER_MESSAGE =
-            "Please provide a filter in the query string, e.g. ?filter=04-15"
+            "Please provide a filter in the query string, e.g. ?filter=04-15 or ?filter=04/15"
             + " for April 15th or ?filter=02 for February. "
             + "Partial months are also supported, e.g. ?filter=1 for February 10th - 19th. "
             + "Partial days are also supported, e.g., ?filter=05-0 for May 1st - 9th.";
         public static readonly string START_DATE_MESSAGE =
-            "Please provide a valid startDate in the query string MM-dd, e.g. ?startDate=04-15";
+            "Please provide a valid startDate in the query string MM-dd or MM/dd, e.g. ?startDate=04-15 or ?startDate=04/15";
         public static readonly string END_DATE_MESSAGE =
-            "Please provide a valid endDate in the query string MM-dd, e.g. ?endDate=04-15";
+            "Please provide a valid endDate in the query string MM-dd or MM/dd, e.g. ?endDate=04-15 or ?endDate=04/15";
 
         // If running in development use the AzureWebJobsScriptRoot instead of basePath
         // basePath comes from the FunctionContext
@@ -112,8 +113,8 @@ namespace Feastival.Feastival
                 return new BadRequestObjectResult(END_DATE_MESSAGE);
             }
 
-            var startDateParsed = DateTime.ParseExact(startDate, "MM-dd", CultureInfo.InvariantCulture);
-            var endDateParsed = DateTime.ParseExact(endDate, "MM-dd", CultureInfo.InvariantCulture);
+            var startDateParsed = DateTime.ParseExact(NormalizeDateSeparator(startDate), "MM-dd", CultureInfo.InvariantCulture);
+            var endDateParsed = DateTime.ParseExact(NormalizeDateSeparator(endDate), "MM-dd", CultureInfo.InvariantCulture);
 
             return BuildResult(executionContext.FunctionDefinition.PathToAssembly,
                 FilterRange,
@@ -139,7 +140,7 @@ namespace Feastival.Feastival
             }
 
             return BuildResult(executionContext.FunctionDefinition.PathToAssembly,
-                FilterMonthDay, req.Query["filter"].ToString());
+                FilterMonthDay, NormalizeDateSeparator(req.Query["filter"].ToString()));
         }
 
         [Function("about")]

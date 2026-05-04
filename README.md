@@ -39,7 +39,7 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/about provides the version and
 ## run
 
 ```bash
-$ cd Function
+$ cd Feastival
 $ func start
 ```
 
