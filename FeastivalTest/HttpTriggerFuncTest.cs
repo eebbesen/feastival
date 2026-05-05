@@ -72,7 +72,7 @@ public class HttpTriggerFuncTest
     public void BuildResult_Year_ShouldReturnOkObjectResult()
     {
         var result = (IActionResult)_buildResultMethod!.Invoke(_httpTriggerFunc,
-            [basePath, "", "", "", '-'])!;
+            [basePath, "", "", ""])!;
         System.Diagnostics.Debug.WriteLine($"AResult: {((OkObjectResult)result).Value}");
 
         Assert.IsType<OkObjectResult>(result);
@@ -86,7 +86,7 @@ public class HttpTriggerFuncTest
     public void BuildResult_Year_ShouldReturnBadRequestObjectResult()
     {
         var result = (IActionResult)_buildResultMethod!.Invoke(_httpTriggerFunc,
-            ["badpath", "", "", "", '-'])!;
+            ["badpath", "", "", ""])!;
 
         Assert.IsType<BadRequestObjectResult>(result);
         Assert.Contains("Could not find a part of the path",
@@ -249,7 +249,7 @@ public class HttpTriggerFuncTest
     }
 
     [Fact]
-    public void RunMonthDay_ShouldReturnSlashKeysWhenFilterUsesSlash()
+    public void RunMonthDay_ShouldAcceptSlashSeparator()
     {
         var mockReq = new Mock<HttpRequest>();
         mockReq.Setup(req => req.Query["filter"]).Returns("02/15");
@@ -259,53 +259,21 @@ public class HttpTriggerFuncTest
 
         Assert.Equal("application/json", result.ContentTypes[0]);
         Assert.Single(values);
-        Assert.Equal("2025/02/15", values.Keys.First());
         Assert.Equal("National Gumdrop Day", values.First().Value[0]);
     }
 
     [Fact]
-    public void RunMonthDay_ShouldReturnDashKeysWhenFilterUsesDash()
-    {
-        var mockReq = new Mock<HttpRequest>();
-        mockReq.Setup(req => req.Query["filter"]).Returns("02-15");
-
-        var result = (OkObjectResult)_httpTriggerFunc.RunMonthDay(mockReq.Object, mockContext.Object);
-        var values = (Dictionary<string, List<string>>)result.Value!;
-
-        Assert.Equal("application/json", result.ContentTypes[0]);
-        Assert.Single(values);
-        Assert.Equal("2025-02-15", values.Keys.First());
-        Assert.Equal("National Gumdrop Day", values.First().Value[0]);
-    }
-
-    [Fact]
-    public void RunRange_ShouldReturnSlashKeysWhenDatesUseSlash()
+    public void RunRange_ShouldAcceptSlashSeparators()
     {
         var mockReq = new Mock<HttpRequest>();
         mockReq.Setup(req => req.Query["startDate"]).Returns("02/28");
         mockReq.Setup(req => req.Query["endDate"]).Returns("03/03");
 
-        var result = (OkObjectResult)_httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
-        var values = (Dictionary<string, List<string>>)result.Value!;
+        var result = _httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
 
-        Assert.Equal("application/json", result.ContentTypes[0]);
-        Assert.Equal(4, values.Count);
-        Assert.All(values.Keys, key => Assert.Contains('/', key));
-    }
-
-    [Fact]
-    public void RunRange_ShouldDefaultToStartDateSeparatorWhenMixed()
-    {
-        var mockReq = new Mock<HttpRequest>();
-        mockReq.Setup(req => req.Query["startDate"]).Returns("02-28");
-        mockReq.Setup(req => req.Query["endDate"]).Returns("03/03");
-
-        var result = (OkObjectResult)_httpTriggerFunc.RunRange(mockReq.Object, mockContext.Object);
-        var values = (Dictionary<string, List<string>>)result.Value!;
-
-        Assert.Equal("application/json", result.ContentTypes[0]);
-        Assert.Equal(4, values.Count);
-        Assert.All(values.Keys, key => Assert.Contains('-', key));
+        Assert.Equal("application/json", ((OkObjectResult)result).ContentTypes[0]);
+        Assert.Equal(4,
+            ((OkObjectResult)result).Value is Dictionary<string, List<string>> data ? data.Count : 0);
     }
 
     [Fact]
