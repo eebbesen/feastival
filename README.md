@@ -28,7 +28,7 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/today provides all holidays fo
 
 ### range
 
-https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/range?startDate=MM-dd&endDate=MM-dd provides all holidays between the start and end dates
+https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/range?startDate=MM-dd&endDate=MM-dd provides all holidays between the start and end dates in the same year
 
 No date portions and no year allowed, just `MM-dd`
 

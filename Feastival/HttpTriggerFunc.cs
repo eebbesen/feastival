@@ -12,7 +12,14 @@ namespace Feastival.Feastival
     {
         private readonly ILogger<HttpTriggerFunc> _logger = logger;
         private static readonly string DATA_PATH = Path.Combine("data", "2026.json");
+        private static char DetectSeparator(string date) => date.Contains('/') ? '/' : '-';
         private static string NormalizeDateSeparator(string date) => date.Replace('/', '-');
+        private static Dictionary<string, List<string>> ApplySeparator(
+            Dictionary<string, List<string>> data, char separator)
+        {
+            if (separator == '-') return data;
+            return data.ToDictionary(kvp => kvp.Key.Replace('-', separator), kvp => kvp.Value);
+        }
         private const string FilterToday = "TODAY";
         private const string FilterRange = "RANGE";
         private const string FilterYear = "YEAR";
@@ -47,13 +54,14 @@ namespace Feastival.Feastival
         }
 
         private IActionResult BuildResult(string basePath,
-            string timeSpan, string startDate = "", string endDate = "")
+            string timeSpan, string startDate = "", string endDate = "", char separator = '-')
         {
             _logger
-                .LogInformation("{TimeSpan} startDate: {StartDate} endDate: {EndDate}",
+                .LogInformation("span: {TimeSpan} startDate: {StartDate} endDate: {EndDate} separator: {Separator}",
                 HttpUtility.UrlEncode(timeSpan),
                 HttpUtility.UrlEncode(startDate),
-                HttpUtility.UrlEncode(endDate));
+                HttpUtility.UrlEncode(endDate),
+                HttpUtility.UrlEncode(separator.ToString()));
             Dictionary<string, List<string>> data;
 
             try
@@ -82,7 +90,7 @@ namespace Feastival.Feastival
                 return new BadRequestObjectResult(ex.Message);
             }
 
-            var result = new OkObjectResult(data);
+            var result = new OkObjectResult(ApplySeparator(data, separator));
             result.ContentTypes.Add("application/json");
 
             return result;
@@ -113,13 +121,15 @@ namespace Feastival.Feastival
                 return new BadRequestObjectResult(END_DATE_MESSAGE);
             }
 
+            var separator = DetectSeparator(startDate);
             var startDateParsed = DateTime.ParseExact(NormalizeDateSeparator(startDate), "MM-dd", CultureInfo.InvariantCulture);
             var endDateParsed = DateTime.ParseExact(NormalizeDateSeparator(endDate), "MM-dd", CultureInfo.InvariantCulture);
 
             return BuildResult(executionContext.FunctionDefinition.PathToAssembly,
                 FilterRange,
                 startDateParsed.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-                endDateParsed.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                endDateParsed.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                separator);
         }
 
         [Function("year")]
@@ -134,13 +144,15 @@ namespace Feastival.Feastival
         public IActionResult RunMonthDay([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req,
     FunctionContext executionContext)
         {
-            if (string.IsNullOrEmpty(req.Query["filter"]))
+            var filter = req.Query["filter"].ToString();
+
+            if (string.IsNullOrEmpty(filter))
             {
                 return new BadRequestObjectResult(FILTER_MESSAGE);
             }
 
             return BuildResult(executionContext.FunctionDefinition.PathToAssembly,
-                FilterMonthDay, NormalizeDateSeparator(req.Query["filter"].ToString()));
+                FilterMonthDay, NormalizeDateSeparator(filter), separator: DetectSeparator(filter));
         }
 
         [Function("about")]
