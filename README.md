@@ -14,7 +14,7 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/year provides all holidays for
 
 ### month-day
 
-Given DATE_PORTION is any of `MM-DD`, `MM-D`, `MM`, `M`
+Given DATE_PORTION is any of `MM-DD`, `MM-D`, `MM`, `M`. `/` may be used to separate day and month as well `-`.
 
 https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/month-day?filter=DATE_PORTION provides
 * all holidays for a date when `MM-DD` is provieded (e.g., `05-21`)
@@ -28,7 +28,7 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/today provides all holidays fo
 
 ### range
 
-https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/range?startDate=MM-dd&endDate=MM-dd provides all holidays between the start and end dates
+https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/range?startDate=MM-dd&endDate=MM-dd provides all holidays between the start and end dates in the same year
 
 No date portions and no year allowed, just `MM-dd`
 
@@ -61,7 +61,7 @@ and add it to your path
 
     $ export PATH="$PATH:/Users/username/.dotnet/tools"
 
-then after each test
+then after each test run
 
 ```bash
 $ reportgenerator \
@@ -113,6 +113,7 @@ then in Azure Portal create application registration credential linked to your G
 
 ## days that shift every year
 * National Fruitcake Toss Day (first Saturday in January)
+* National Burrito Day (first Thursday in April)
 * National Hot Dog Day (third Wednesday of July)
 * National Ice Cream Day (third Sunday of July)
 * National French Fry Day (second Friday in July)
