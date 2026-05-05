@@ -26,8 +26,8 @@ namespace Feastival.Feastival
         private const string FilterMonthDay = "MONTH-DAY";
         public static readonly string FILTER_MESSAGE =
             "Please provide a filter in the query string, e.g. ?filter=04-15 or ?filter=04/15"
-            + " for April 15th or ?filter=02 for February. "
-            + "Partial months are also supported, e.g. ?filter=1 for February 10th - 19th. "
+            + " for April 15th or ?filter=02 for all days in February. "
+            + "Partial months are also supported, e.g. ?filter=1 for October - December. "
             + "Partial days are also supported, e.g., ?filter=05-0 for May 1st - 9th.";
         public static readonly string START_DATE_MESSAGE =
             "Please provide a valid startDate in the query string MM-dd or MM/dd, e.g. ?startDate=04-15 or ?startDate=04/15";
