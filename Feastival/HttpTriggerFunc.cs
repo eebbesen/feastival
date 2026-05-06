@@ -70,11 +70,6 @@ namespace Feastival.Feastival
                 {
                     data = Helper.Filter(data, startDate);
                 }
-                else if (!string.IsNullOrEmpty(startDate))
-                {
-                    data = data.Where(kvp => kvp.Key.StartsWith(startDate))
-                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-                }
             }
             catch (Exception ex)
             {
