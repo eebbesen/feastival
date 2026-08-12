@@ -74,6 +74,55 @@ $ reportgenerator \
 
 The sonar GitHub action will fail unless SONAR_TOKEN is set as a secret
 
+## GitHub Actions workflows
+
+This repository uses three GitHub Actions workflows:
+* `test.yml` - Runs tests and generates coverage reports
+* `sonar.yml` - Performs SonarQube code quality analysis
+* `deploy.yml` - Builds, tests, and deploys to Azure Functions
+
+### Rerunning failed workflows
+
+If a GitHub Action workflow fails, there are several ways to rerun it:
+
+#### Option 1: Rerun via GitHub UI
+
+1. Go to the [Actions tab](https://github.com/eebbesen/feastival/actions) in the repository
+2. Click on the failed workflow run
+3. Click the "Re-run jobs" dropdown button in the top-right corner
+4. Choose:
+   - "Re-run all jobs" to rerun all jobs in the workflow
+   - "Re-run failed jobs" to rerun only the jobs that failed
+
+#### Option 2: Manually trigger workflows (workflow_dispatch)
+
+All workflows in this repository are configured with `workflow_dispatch`, allowing manual triggering:
+
+1. Go to the [Actions tab](https://github.com/eebbesen/feastival/actions) in the repository
+2. Click on the workflow you want to run (test, sonar, or deploy)
+3. Click the "Run workflow" button
+4. Select the branch and click "Run workflow"
+
+#### Option 3: Using GitHub CLI
+
+If you have the [GitHub CLI](https://cli.github.com/) installed:
+
+```bash
+# Rerun a failed workflow
+gh run rerun <run-id>
+
+# Rerun only failed jobs
+gh run rerun <run-id> --failed
+
+# List recent workflow runs to find the run-id
+gh run list
+
+# Manually trigger a workflow
+gh workflow run test.yml
+gh workflow run sonar.yml
+gh workflow run deploy.yml
+```
+
 ## setup notes
 
 * followed https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-function-app-portal?pivots=programming-language-csharp
