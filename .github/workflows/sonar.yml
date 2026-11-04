@@ -9,7 +9,7 @@ jobs:
     name: SonarQube build and analyze
     runs-on: ubuntu-latest
     env:
-      DOTNET_VERSION: 10.0.x
+      DOTNET_VERSION: 8.0.x
     steps:
       - name: Set up JDK 21
         uses: actions/setup-java@v4

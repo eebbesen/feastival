@@ -11,7 +11,7 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './Feastival' # set this to the path to your function app project
-  DOTNET_VERSION: '10.0.x' # set this to the dotnet version to use
+  DOTNET_VERSION: '8.0.x' # set this to the dotnet version to use
 
 jobs:
   test:

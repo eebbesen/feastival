@@ -38,7 +38,7 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/about provides the version and
 
 ## run
 
-Requires .NET 10 SDK and Azure Functions Core Tools.
+Requires .NET 8 SDK and Azure Functions Core Tools.
 
 ```bash
 $ cd Feastival
