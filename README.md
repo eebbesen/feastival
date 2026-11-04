@@ -110,10 +110,10 @@ then in Azure Portal create application registration credential linked to your G
 ### Azure deployment via az cli
 
 ```bash
--- remote
+# remote
 az functionapp deployment source config --name <funcName> --resource-group <funcGroup> --repo-url <repoUrl> --branch <branch> --manual-integration
 
--- local
+# local
 az functionapp deployment source config-local-git --name <funcName> --resource-group <funcGroup>
 ```
 
@@ -124,6 +124,7 @@ az functionapp deployment source config-local-git --name <funcName> --resource-g
 
 ## days that shift every year
 * National Fruitcake Toss Day (first Saturday in January)
+* National Surf and Turf Day (02/29 in leap years, otherwise shifting depending on year)
 * National Burrito Day (first Thursday in April)
 * National Hot Dog Day (third Wednesday of July)
 * National Ice Cream Day (third Sunday of July)
