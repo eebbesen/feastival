@@ -38,6 +38,8 @@ https://AZURE_DOMAIN_PREFIX.azurewebsites.net/api/about provides the version and
 
 ## run
 
+Requires .NET 10 SDK and Azure Functions Core Tools.
+
 ```bash
 $ cd Feastival
 $ func start
@@ -105,6 +107,15 @@ For deployments to succeed the following Azure secrets need to be populated in G
 
 then in Azure Portal create application registration credential linked to your GitHub repository
 
+### Azure deployment via az cli
+
+```bash
+# remote
+az functionapp deployment source config --name <funcName> --resource-group <funcGroup> --repo-url <repoUrl> --branch <branch> --manual-integration
+
+# local
+az functionapp deployment source config-local-git --name <funcName> --resource-group <funcGroup>
+```
 
 ## sources
 * https://foodiegiggles.com/food-holidays-calendar
@@ -113,6 +124,7 @@ then in Azure Portal create application registration credential linked to your G
 
 ## days that shift every year
 * National Fruitcake Toss Day (first Saturday in January)
+* National Surf and Turf Day (02/29 in leap years, otherwise shifting depending on year)
 * National Burrito Day (first Thursday in April)
 * National Hot Dog Day (third Wednesday of July)
 * National Ice Cream Day (third Sunday of July)
@@ -121,4 +133,3 @@ then in Azure Portal create application registration credential linked to your G
 * National Refreshment Day (fourth Thursday in July)
 * National Chili Dog Day (last Thursday in July)
 * National Taco Day (first Tuesday in October)
-

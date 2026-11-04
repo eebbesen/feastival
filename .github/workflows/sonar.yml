@@ -8,6 +8,8 @@ jobs:
   sonar:
     name: SonarQube build and analyze
     runs-on: ubuntu-latest
+    env:
+      DOTNET_VERSION: 10.0.x
     steps:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -17,6 +19,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
         with:

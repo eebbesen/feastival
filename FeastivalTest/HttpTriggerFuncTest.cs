@@ -194,7 +194,7 @@ public class HttpTriggerFuncTest
         var result = _httpTriggerFunc.RunMonthDay(mockReq.Object, mockContext.Object);
 
         Assert.Equal("application/json", ((OkObjectResult)result).ContentTypes[0]);
-        Assert.Equal(29,
+        Assert.Equal(28,
             ((OkObjectResult)result).Value is Dictionary<string, List<string>> data ? data.Count : 0);
     }
 
