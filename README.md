@@ -2,7 +2,7 @@
 
 An API for United States food holidays.
 
-[See it in action!](https://feastival.azurewebsites.net/api/year)
+[See it in action!](https://feastival-flex.azurewebsites.net/api/year)
 
 ![tests](https://github.com/eebbesen/feastival/actions/workflows/test.yml/badge.svg)
 
